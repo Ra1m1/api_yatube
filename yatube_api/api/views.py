@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets 
+from rest_framework import viewsets
 from rest_framework.exceptions import PermissionDenied
 
 from posts.models import Post, Group
@@ -9,10 +9,10 @@ from .serializers import PostSerializer, GroupSerializer, CommentSerializer
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    
+
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
-        
+
     def perform_update(self, serializer):
         obj = self.get_object()
         if obj.author != self.request.user:
@@ -24,9 +24,11 @@ class PostViewSet(viewsets.ModelViewSet):
             raise PermissionDenied('Так эт не твоё, нельзя удалять бож')
         post_to_delete.delete()
 
+
 class GroupViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
+
 
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
